@@ -1,2 +1,5 @@
 fastapi
 uvicorn
+cassandra-driver
+python-dotenv
+pydantic-settings
