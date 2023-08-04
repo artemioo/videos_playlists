@@ -4,7 +4,9 @@ from dotenv import dotenv_values
 from functools import lru_cache
 # env_values = dotenv_values(".env")
 # print(env_values)
+import os
 
+os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
 class Settings(BaseSettings):
     ASTRADB_KEYSPACE: str
