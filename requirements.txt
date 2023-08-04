@@ -3,3 +3,5 @@ uvicorn
 cassandra-driver
 python-dotenv
 pydantic-settings
+email-validator
+argon2-cffi

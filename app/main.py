@@ -25,3 +25,9 @@ async def homepage():
     return {"hello": "world",
             "keyspace": settings.ASTRADB_KEYSPACE,
             'db_id': settings.ASTRADB_CLIENT_ID}
+
+
+@app.get('/users')
+async def users_list_view():
+    q = User.objects.all().limit(10)
+    return list(q)

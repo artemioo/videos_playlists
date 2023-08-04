@@ -8,6 +8,7 @@ import os
 
 os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
+
 class Settings(BaseSettings):
     ASTRADB_KEYSPACE: str
     ASTRADB_CLIENT_ID: str
