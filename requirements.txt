@@ -6,3 +6,4 @@ pydantic-settings
 email-validator
 argon2-cffi
 pytest
+jinja2
