@@ -3,7 +3,15 @@
 
 
 {% block content %}
-<h1> Login </h1>
+<h1> Sign Up </h1>
+
+{% if errors %}
+<p>An error occured, please check the following</p>
+    {% for error in errors %}
+        <li><b>{{ error.loc[0] }}</b>: {{ error.msg }} </li>
+    {% endfor %}
+{% endif %}
+
 
 <form action="" method="POST">
     <div>
@@ -11,9 +19,14 @@
         <input type="email" name="email" placeholder="your@email.com">
     </div>
 
-        <div>
+    <div>
         <label for="password">Password</label>
         <input type="password" name="password" placeholder="your password">
+    </div>
+
+    <div>
+        <label for="password_confirm">Password Confirm</label>
+        <input type="password" name="password_confirm" placeholder="your password again">
     </div>
     <button type="submit"> Login </button>
 </form>
