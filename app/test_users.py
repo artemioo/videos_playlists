@@ -30,7 +30,7 @@ def test_invalid_email(setup):
 
 
 def test_valid_password(setup):
-    q = User.objects.filter(email='test@test.com') # 0
+    q = User.objects.filter(email='test@test.com')
     assert q.count() == 1
     user_obj = q.first()
     assert user_obj.verify_password('abc123') == True
