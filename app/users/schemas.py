@@ -23,3 +23,8 @@ class UserSignupSchema(BaseModel):
         if password != password_cofrim:
             raise ValueError('Passwords do not match')
         return v
+
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr
+    password: SecretStr

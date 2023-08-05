@@ -49,7 +49,7 @@ def login_post_view(request: Request,
 
     raw_data = {'email': email, 'password': password}
     data, errors = utils.valid_schema_data_or_error(raw_data, UserLoginSchema)
-
+    print(data)
     return templates.TemplateResponse('auth/signup.html',
                                       {'request': request,
                                        'data': data,
