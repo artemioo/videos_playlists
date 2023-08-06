@@ -2,14 +2,15 @@ from pydantic import BaseSettings, Field
 from typing import Optional
 from dotenv import dotenv_values
 from functools import lru_cache
-# env_values = dotenv_values(".env")
-# print(env_values)
+from pathlib import Path
 import os
 
 os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
 
 class Settings(BaseSettings):
+    BASE_DIR: Path = Path(__file__).resolve().parent
+    TEMPLATES_DIR: Path = Path(__file__).resolve().parent / 'templates'
     ASTRADB_KEYSPACE: str
     ASTRADB_CLIENT_ID: str
     ASTRADB_CLIENT_SECRET: str

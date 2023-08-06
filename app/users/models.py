@@ -2,8 +2,8 @@ import uuid
 from app.config import get_settings
 from cassandra.cqlengine import columns
 from cassandra.cqlengine.models import Model
-from . import validators, security
-
+from . import security
+from .validators import _validate_email_util
 settings = get_settings()
 
 
@@ -36,7 +36,7 @@ class User(Model):
         q = User.objects.filter(email=email)
         if q.count != 0:
             raise Exception('User already has account')
-        valid, msg, email = validators._validate_email(email)
+        valid, msg, email = _validate_email_util(email)
         if not valid:
             raise Exception("Invalid email: {msg}")
         obj = User(email=email)
