@@ -1,6 +1,4 @@
 from pydantic import BaseSettings, Field
-from typing import Optional
-from dotenv import dotenv_values
 from functools import lru_cache
 from pathlib import Path
 import os

@@ -1,6 +1,5 @@
 import json
 from pydantic import BaseModel, error_wrappers
-from app.users.schemas import UserSignupSchema, UserLoginSchema
 
 
 def valid_schema_data_or_error(raw_data: dict, SchemaModel: BaseModel):
