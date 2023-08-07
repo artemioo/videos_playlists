@@ -1,7 +1,9 @@
 import pathlib
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
+
+from .users.decorators import login_required
 from .users.schemas import (UserSignupSchema, UserLoginSchema)
 from . import db, utils
 from .users.models import User
@@ -35,6 +37,14 @@ def homepage(request: Request):
     return render(request, 'home.html', context)
 
 
+@app.get("/account", response_class=HTMLResponse)
+@login_required
+def account_view(request: Request):
+
+    context = {}
+    return render(request, 'account.html', context)
+
+
 @app.get("/login", response_class=HTMLResponse)
 def login_get_view(request: Request):
     session_id = request.cookies.get('session_id') or None
@@ -46,7 +56,7 @@ def login_post_view(request: Request,
                     email: str = Form(...),
                     password: str = Form(...)):
 
-    raw_data = {'email': email, 'password': password,}
+    raw_data = {'email': email, 'password': password}
     data, errors = utils.valid_schema_data_or_error(raw_data, UserLoginSchema)
     context = {
                 "data": data,

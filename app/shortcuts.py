@@ -16,13 +16,14 @@ def redirect(path, cookies: dict = {}):
 
 
 def render(request, template_name, context={}, status_code: int=200, cookies: dict = {}):
+    """ возвращает response класса HTMLResponse в котором лежит название шаблона+request+status code+cookie"""
     ctx = context.copy()
     ctx.update({'request': request})
     t = templates.get_template(template_name)
-    html_str = t.render(ctx)
+    html_str = t.render(ctx)  # class Template method render, This will return the rendered template as a string.
     response = HTMLResponse(html_str, status_code=status_code)
-    response.set_cookie(key='darkmode', value=1)
-    if len(cookies.keys()):
+    # response.set_cookie(key='dark mode', value=1)
+    if len(cookies.keys()) > 0:
         # set httponly cookies
         for k, v in cookies.items():
             response.set_cookie(key=k, value=v, httponly=True)
@@ -30,6 +31,3 @@ def render(request, template_name, context={}, status_code: int=200, cookies: di
     # for key in request.cookies.keys():
     #      response.delete_cookie(key)
     return response
-
-
-

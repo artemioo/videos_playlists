@@ -3,6 +3,7 @@ from pydantic import BaseModel, error_wrappers
 
 
 def valid_schema_data_or_error(raw_data: dict, SchemaModel: BaseModel):
+    """ этот метод проверяет валидны ли данные, отталкиваясь от схемы которую получил """
     data = {}
     errors = []
     error_str = None
