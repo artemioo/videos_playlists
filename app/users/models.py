@@ -4,6 +4,8 @@ from cassandra.cqlengine import columns
 from cassandra.cqlengine.models import Model
 from . import security
 from .validators import _validate_email_util
+
+
 settings = get_settings()
 
 

@@ -1,6 +1,26 @@
-from pydantic import BaseModel, EmailStr, SecretStr, validator
-
+from pydantic import BaseModel, EmailStr, SecretStr, validator, root_validator
+from . import auth
 from .models import User
+
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr
+    password: SecretStr
+    token: str = None
+
+    @root_validator
+    def validate_user(cls, values):
+        """ фунция которая валидирует юзера с помощью других методов и присваивает токен """
+        err_msg = 'Incorrect email or password'
+        email = values.get('email') or None
+        password = values.get('password') or None
+        if email is None or password is None:
+            raise ValueError(err_msg)
+        password = password.get_secret_value()
+        user_obj = auth.authenticate(email, password)
+
+        token = auth.login(user_obj)
+        return {'session_id': token}
 
 
 class UserSignupSchema(BaseModel):
@@ -25,6 +45,4 @@ class UserSignupSchema(BaseModel):
         return v
 
 
-class UserLoginSchema(BaseModel):
-    email: EmailStr
-    password: SecretStr
+
