@@ -18,7 +18,7 @@ def authenticate(email, password): # check and verify (step 1)
     return user_obj
 
 
-def login(user_obj, expires=5):  # set cookie(token) (step 2)
+def login(user_obj, expires=300):  # set cookie(token) (step 2)
     raw_data = {
         "user_id": f'{user_obj.user_id}',
         "role": "admin",
@@ -35,6 +35,8 @@ def verify_user_id(token):  # (step 3)
         print(e)
     except:
         pass
+    if data is None:
+        return None
     if 'user_id' not in data:
         return None
     return data
