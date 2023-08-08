@@ -10,6 +10,7 @@ from .users.decorators import login_required
 from .users.schemas import (UserSignupSchema, UserLoginSchema)
 from . import db, utils
 from .users.models import User
+from .videos.models import Video
 from .config import get_settings
 from app.shortcuts import render, redirect
 from cassandra.cqlengine.management import sync_table
@@ -38,6 +39,7 @@ def on_startup():
     global DB_SESSION
     DB_SESSION = db.get_session()
     sync_table(User)
+    sync_table(Video)
 
 
 @app.get("/", response_class=HTMLResponse)
