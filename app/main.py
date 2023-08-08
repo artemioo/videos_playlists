@@ -1,6 +1,7 @@
 import pathlib
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse
+from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.authentication import requires # instead of middleware?
@@ -44,6 +45,18 @@ def homepage(request: Request):
     if request.user.is_authenticated:
         return render(request, "dashboard.html", {}, status_code=200)
     return render(request, 'home.html', {})
+
+
+# @app.get('/logout', response_class=HTMLResponse)
+# def logout(request: Request):
+#     request.cookies.set()
+#     return redirect('/login')
+
+@app.get('/logout', response_class=HTMLResponse)
+def logout(request: Request):
+    response = RedirectResponse(url='/login')
+    response.delete_cookie('session_id')  # Удаление куки
+    return response
 
 
 @app.get("/account", response_class=HTMLResponse)

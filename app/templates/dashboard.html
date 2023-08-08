@@ -3,5 +3,11 @@
 {% block title %} Welcome | {{ super() }} {% endblock %}
 
 {% block content %}
-<h1> Welcome  User ((name))  </h1>
+<h1> Welcome  User
+</h1>
+    <ul>
+    <li>     {{ request.user }} </li>
+    <li>     {{ request.user.display_name }} </li>
+    </ul>
+<a href="/logout"> Logout </a>
 {% endblock %}
