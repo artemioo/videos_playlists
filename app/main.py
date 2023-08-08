@@ -11,6 +11,7 @@ from .config import get_settings
 from app.shortcuts import render, redirect
 from cassandra.cqlengine.management import sync_table
 
+
 BASE_DIR = pathlib.Path(__file__).resolve().parent # app/
 TEMPLATE_DIR = BASE_DIR / "templates"
 
@@ -18,6 +19,12 @@ TEMPLATE_DIR = BASE_DIR / "templates"
 settings = get_settings()
 app = FastAPI()
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
+
+
+DB_SESSON = None
+
+
+from .handlers import * # noqa
 
 
 @app.on_event("startup")
@@ -40,7 +47,6 @@ def homepage(request: Request):
 @app.get("/account", response_class=HTMLResponse)
 @login_required
 def account_view(request: Request):
-
     context = {}
     return render(request, 'account.html', context)
 
