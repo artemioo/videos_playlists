@@ -11,6 +11,7 @@ from .users.schemas import (UserSignupSchema, UserLoginSchema)
 from . import db, utils
 from .users.models import User
 from .videos.models import Video
+from .videos.routers import router as video_router
 from .config import get_settings
 from app.shortcuts import render, redirect
 from cassandra.cqlengine.management import sync_table
@@ -21,8 +22,11 @@ TEMPLATE_DIR = BASE_DIR / "templates"
 
 
 settings = get_settings()
+
 app = FastAPI()
 app.add_middleware(AuthenticationMiddleware, backend=JWTCookieBackend())
+app.include_router(video_router)
+
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
 
 

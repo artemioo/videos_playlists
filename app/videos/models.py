@@ -6,7 +6,7 @@ from app.users.exceptions import InvalidUserIDException
 from app.users.models import User
 
 from .extractors import extract_video_id
-from .exceptions import InvalidYouTubeVideoURLException, VideoAddedException
+from .exceptions import InvalidYouTubeVideoURLException, VideoAlreadyAddedException
 
 settings = get_settings()
 
