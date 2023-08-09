@@ -2,9 +2,11 @@ import uuid
 from app.config import get_settings
 from cassandra.cqlengine import columns
 from cassandra.cqlengine.models import Model
-
+from app.users.exceptions import InvalidUserIDException
 from app.users.models import User
-from app.videos.extractors import extract_video_id
+
+from .extractors import extract_video_id
+from .exceptions import InvalidYouTubeVideoURLException, VideoAddedException
 
 settings = get_settings()
 
@@ -29,12 +31,12 @@ class Video(Model):
     def add_video(url, user_id=None):
         host_id = extract_video_id(url)  #vnSVYUJrAZU
         if host_id is None:
-            raise Exception('Invalid YouTube Video URL')
+            raise InvalidYouTubeVideoURLException('Invalid YouTube Video URL')
         user_exists = User.check_exists(user_id)
         if user_exists is None:
-            raise Exception('Invalid user_id')
+            raise InvalidUserIDException('Invalid user_id')
         q = Video.objects.allow_filtering().filter(host_id=host_id, user_id=user_id)
         if q.count() != 0:
-            raise Exception('Video already added')
+            raise VideoAlreadyAddedException('Video already added')
         return Video.create(host_id=host_id, user_id=user_id, url=url)
 # https://www.youtube.com/watch?v=vnSVYUJrAZU

@@ -10,7 +10,9 @@ class UserLoginSchema(BaseModel):
 
     @root_validator
     def validate_user(cls, values):
-        """ фунция которая валидирует юзера с помощью других методов и присваивает токен """
+        """
+        фунция которая валидирует юзера с помощью других методов и присваивает токен
+        """
         err_msg = 'Incorrect email or password'
         email = values.get('email') or None
         password = values.get('password') or None
