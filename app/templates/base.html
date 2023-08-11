@@ -6,9 +6,10 @@
     <title>{% block title %} Videos Playlists {% endblock %}</title>
 </head>
 <body>
-    {% block content %}
-    {% include 'snippets/nav.html' %}
-    {% endblock %}
+        {% include 'snippets/nav.html' %}
+        {% block content %}
+        <h1>Hello world</h1>
+        {% endblock %}
 
         <script>
             var tag = document.createElement("script");
@@ -17,5 +18,5 @@
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         </script>
 
-</body>
+    </body>
 </html>
