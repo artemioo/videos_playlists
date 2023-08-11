@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}}
 
-</body>
-</html>
+{% block content %}
+
+{% for object in object_list %}
+       <li>
+           <a href="{{ object.path }}">
+           {% if not object.title %} {{ object.host_id }} {% else %}
+           {{ object.title }} {% endif %}
+               </a>
+       </li>
+
+
+
+{% endfor %}
+
+{% endblock %}
