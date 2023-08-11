@@ -1,3 +1,5 @@
+import uuid
+
 from pydantic import (
     BaseModel,
     validator,
@@ -12,7 +14,7 @@ from .models import Video
 
 class VideoCreateSchema(BaseModel):
     url: str
-    user_id: str  # request.session.user_id
+    user_id: uuid.UUID  # request.session.user_id
 
     @validator("url")
     def validate_youtube_url(cls, url, values, **kwargs):
@@ -24,7 +26,9 @@ class VideoCreateSchema(BaseModel):
     @root_validator
     def validate_data(cls, values):
         url = values.get('url')
-        user_id = values.get('values')
+        if not url:
+            raise ValueError('A valid url is required.')
+        user_id = values.get('user_id')
         video_obj = None
         try:
             video_obj = Video.add_video(url, user_id=user_id)
@@ -38,7 +42,7 @@ class VideoCreateSchema(BaseModel):
             raise ValueError('There is a problem with your account. Please try again')
         if video_obj is None:
             raise ValueError('There is a problem with your account. Please try again')
-        if not isinstance(Video, video_obj):
+        if not isinstance(video_obj, Video):
             raise ValueError('There is a problem with your account. Please try again')
 
         return video_obj.as_data()

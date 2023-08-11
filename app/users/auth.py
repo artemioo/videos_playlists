@@ -18,7 +18,7 @@ def authenticate(email, password): # check and verify (step 1)
     return user_obj
 
 
-def login(user_obj, expires=300):  # set cookie(token) (step 2)
+def login(user_obj, expires=settings.SESSION_DURATION):  # set cookie(token) (step 2)
     raw_data = {
         "user_id": f'{user_obj.user_id}',
         "role": "admin",

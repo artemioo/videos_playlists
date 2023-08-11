@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     ASTRADB_CLIENT_SECRET: str
     SECRET_KEY: str
     JWT_ALGORITHM: str = Field(default='HS256')
+    SESSION_DURATION: int = Field(default=86400)
     # model_config = SettingsConfigDict(env_file='//.env')  pydantic v2
 
     class Config:

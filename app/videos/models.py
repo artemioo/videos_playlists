@@ -13,8 +13,8 @@ settings = get_settings()
 
 class Video(Model):
     __keyspace__ = settings.ASTRADB_KEYSPACE
-    host_id = columns.Text(primary_key=True)  # YouTube
-    db_id = columns.UUID(primary_key=True, default=uuid.uuid1) # UUID1
+    host_id = columns.Text(primary_key=True)  # a part of YouTube link
+    db_id = columns.UUID(primary_key=True, default=uuid.uuid1)  #  UUID1
     host_service = columns.Text(default='youtube')
     url = columns.Text()  # secure
     user_id = columns.UUID()       # owner
@@ -26,6 +26,13 @@ class Video(Model):
 
     def __repr__(self):
         return f'Video(host_id={self.host_id}, host_service={self.host_service})'
+
+    def as_data(self):
+        return {f'{self.host_service}_id': self.host_id, 'path': self.path}
+
+    @property
+    def path(self):
+        return f"/videos/{self.host_id}"  # get a link like '/videos/vnSVYUJrAZU'
 
     @staticmethod
     def add_video(url, user_id=None):
