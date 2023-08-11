@@ -27,6 +27,17 @@ class Video(Model):
     def __repr__(self):
         return f'Video(host_id={self.host_id}, host_service={self.host_service})'
 
+    def render(self):
+        """
+        метод для получения шаблона сервиса. Для работы с сервисами помимо YouTube
+        """
+        from app.main import templates  # because of a circular import error
+        basename = self.host_service
+        template_name = f'videos/renderers/{basename}.html'
+        context = {'host_id': self.host_id}
+        t = templates.get_template(template_name)
+        return t.render(context)
+
     def as_data(self):
         return {f'{self.host_service}_id': self.host_id, 'path': self.path}
 
