@@ -129,10 +129,12 @@ async def users_list_view():
 def watch_event_view(request: Request, data: dict):
     print(data)
     if request.user.is_authenticated:
-        WatchEvent.objects.create(host_id=data.get('videoId'),
+        obj = WatchEvent.objects.create(host_id=data.get('videoId'),
                                   user_id=request.user.username,
-                                  start_time=0,
+                                  start_time=data.get('startTime'),
                                   end_time=data.get('currentTime'),
-                                  duration=500,
-                                  complete=False)
+                                  duration=data.get('duration'),
+                                  complete=data.get('complete')
+                                  )
+        print(obj)
     return {'working': True}
