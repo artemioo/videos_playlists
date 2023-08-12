@@ -11,6 +11,7 @@ from .users.schemas import (UserSignupSchema, UserLoginSchema)
 from . import db, utils
 from .users.models import User
 from .videos.models import Video
+from .watch_events.models import WatchEvent
 from .videos.routers import router as video_router
 from .config import get_settings
 from app.shortcuts import render, redirect
@@ -44,6 +45,7 @@ def on_startup():
     DB_SESSION = db.get_session()
     sync_table(User)
     sync_table(Video)
+    sync_table(WatchEvent)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -124,7 +126,13 @@ async def users_list_view():
 
 
 @app.post('/watch-event')
-def watch_event_view(request: Request, data:dict):
+def watch_event_view(request: Request, data: dict):
     print(data)
-    print(request.user.is_authenticated)
-    return {'working': True }
+    if request.user.is_authenticated:
+        WatchEvent.objects.create(host_id=data.get('videoId'),
+                                  user_id=request.user.username,
+                                  start_time=0,
+                                  end_time=data.get('currentTime'),
+                                  duration=500,
+                                  complete=False)
+    return {'working': True}
