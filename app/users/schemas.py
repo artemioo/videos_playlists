@@ -20,7 +20,6 @@ class UserLoginSchema(BaseModel):
             raise ValueError(err_msg)
         password = password.get_secret_value()  # SecretStr method, получаем пароль в открытом виде
         user_obj = auth.authenticate(email, password)
-
         token = auth.login(user_obj)
         return {'session_id': token}
 
