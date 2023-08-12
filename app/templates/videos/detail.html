@@ -87,11 +87,12 @@
 
         function storeWatchEvent(){
         var duration = player.getDuration()
-            var data = {
-                currentTime: currentTime,
-                startTime: initialStartTime,
-                duration: player.getDuration(),
-                videoId: videoId,
+            var data = {  // переменные как в схеме FastAPI
+                path: window.location.pathname,
+                end_time: currentTime,
+                start_time: initialStartTime,
+                duration: duration,
+                host_id: videoId,
                 complete: (duration * .98) < currentTime
             }
             timeSinceLastSaved = 0;

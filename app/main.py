@@ -12,6 +12,7 @@ from . import db, utils
 from .users.models import User
 from .videos.models import Video
 from .watch_events.models import WatchEvent
+from .watch_events.schemas import WatchEventSchema
 from .videos.routers import router as video_router
 from .config import get_settings
 from app.shortcuts import render, redirect
@@ -125,16 +126,15 @@ async def users_list_view():
     return list(q)
 
 
-@app.post('/watch-event')
-def watch_event_view(request: Request, data: dict):
-    print(data)
+@app.post('/watch-event', response_model=WatchEventSchema)
+def watch_event_view(request: Request, watch_event: WatchEventSchema):
+    cleaned_data = watch_event.dict()
+    data = cleaned_data.copy()
+    data.update({
+        'user_id': request.user.username
+    })
+    print('data: ', data)
     if request.user.is_authenticated:
-        obj = WatchEvent.objects.create(host_id=data.get('videoId'),
-                                  user_id=request.user.username,
-                                  start_time=data.get('startTime'),
-                                  end_time=data.get('currentTime'),
-                                  duration=data.get('duration'),
-                                  complete=data.get('complete')
-                                  )
-        print(obj)
-    return {'working': True}
+        obj = WatchEvent.objects.create(**data)
+        return watch_event
+    return watch_event
