@@ -13,6 +13,7 @@ from .users.models import User
 from .videos.models import Video
 from .watch_events.models import WatchEvent
 from .watch_events.schemas import WatchEventSchema
+from .watch_events.routers import router as watch_event_router
 from .videos.routers import router as video_router
 from .config import get_settings
 from app.shortcuts import render, redirect
@@ -28,6 +29,7 @@ settings = get_settings()
 app = FastAPI()
 app.add_middleware(AuthenticationMiddleware, backend=JWTCookieBackend())
 app.include_router(video_router)
+app.include_router(watch_event_router)
 
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
 
@@ -55,11 +57,6 @@ def homepage(request: Request):
         return render(request, "dashboard.html", {}, status_code=200)
     return render(request, 'home.html', {})
 
-
-# @app.get('/logout', response_class=HTMLResponse)
-# def logout(request: Request):
-#     request.cookies.set()
-#     return redirect('/login')
 
 @app.get('/logout', response_class=HTMLResponse)
 def logout(request: Request):
@@ -126,15 +123,4 @@ async def users_list_view():
     return list(q)
 
 
-@app.post('/watch-event', response_model=WatchEventSchema)
-def watch_event_view(request: Request, watch_event: WatchEventSchema):
-    cleaned_data = watch_event.dict()
-    data = cleaned_data.copy()
-    data.update({
-        'user_id': request.user.username
-    })
-    print('data: ', data)
-    if request.user.is_authenticated:
-        obj = WatchEvent.objects.create(**data)
-        return watch_event
-    return watch_event
+
