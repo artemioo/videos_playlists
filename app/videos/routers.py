@@ -5,6 +5,8 @@ from app.shortcuts import render, redirect, get_object_or_404
 from app.utils import valid_schema_data_or_error
 from .models import Video
 from .schemas import VideoCreateSchema
+from ..watch_events.models import WatchEvent
+
 router = APIRouter(
     prefix='/videos',
     tags=['videos']
@@ -50,8 +52,13 @@ def video_create_post_view(request: Request, title: str = Form(...),
 @router.get('/{host_id}', response_class=HTMLResponse)
 def video_detail_view(request: Request, host_id: str):
     obj = get_object_or_404(Video, host_id=host_id)
+    start_time = 0
+    if request.user.is_authenticated:
+        user_id = request.user.username
+        start_time = WatchEvent.get_resume_time(host_id, user_id)
     context = {
         'host_id': host_id,
+        'start_time': start_time,
         'object': obj,
     }
     return render(request, "videos/detail.html", context)
