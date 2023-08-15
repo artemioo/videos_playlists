@@ -5,6 +5,8 @@ from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.authentication import requires # instead of middleware?
+
+from .playlists.models import Playlist
 from .users.backends import JWTCookieBackend
 from .users.decorators import login_required
 from .users.schemas import (UserSignupSchema, UserLoginSchema)
@@ -15,6 +17,7 @@ from .watch_events.models import WatchEvent
 from .watch_events.schemas import WatchEventSchema
 from .watch_events.routers import router as watch_event_router
 from .videos.routers import router as video_router
+from .playlists.routers import router as playlist_router
 from .config import get_settings
 from app.shortcuts import render, redirect
 from cassandra.cqlengine.management import sync_table
@@ -30,6 +33,7 @@ app = FastAPI()
 app.add_middleware(AuthenticationMiddleware, backend=JWTCookieBackend())
 app.include_router(video_router)
 app.include_router(watch_event_router)
+app.include_router(playlist_router)
 
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
 
@@ -49,6 +53,7 @@ def on_startup():
     sync_table(User)
     sync_table(Video)
     sync_table(WatchEvent)
+    sync_table(Playlist)
 
 
 @app.get("/", response_class=HTMLResponse)
