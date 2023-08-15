@@ -37,21 +37,31 @@ def video_create_view(request: Request, is_htmx=Depends(is_htmx)):
 @router.post('/create', response_class=HTMLResponse)
 @login_required
 def video_create_post_view(request: Request, title: str = Form(...),
-                           url: str = Form(...)):
+                           url: str = Form(...),
+                           is_htmx=Depends(is_htmx)):
     raw_data = {
         "title": title,
         "url": url,
         "user_id": request.user.username,
     }
     data, errors = valid_schema_data_or_error(raw_data, VideoCreateSchema)
+    redirect_path = data.get('path') or '/videos/create'
     context = {
         'data': data,
         "errors": errors,
+        'title': title,
         "url": url,
     }
+
+    if is_htmx:
+        if len(errors) > 0:
+            return render(request, 'videos/htmx/create.html', context)
+        context = {'path': redirect_path, 'title': data.get('title')}
+        return render(request, 'videos/htmx/link.html', context)
+
     if len(errors) > 0:
         return render(request, 'videos/create.html', context, status_code=400)
-    redirect_path = data.get('path') or '/videos/create'
+
     return redirect(redirect_path)
 
 

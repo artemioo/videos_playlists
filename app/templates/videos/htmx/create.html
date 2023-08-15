@@ -1,14 +1,16 @@
 <div>
-    <form action="" method="POST">
+    {% include 'snippets/form_errors.html' %}
+
+    <form action="/videos/create" method="POST" hx-post="/videos/create">
         <div>
             <label for="title">Video Title</label>
-            <input type="text" name="title" id="title" placeholder="FastAPI lessons"
+            <input type="text" name="title" id="title" required="required" placeholder="FastAPI lessons"
                    value="{% if title %} {{ title }} {% endif %}">
 
         </div>
         <div>
             <label for="url">YouTube Link</label>
-            <input type="text" name="url" id="url" placeholder="https://www.youtube.com/watch?v=KQ-u4RcFLBY&list=PLEsfXFp6DpzTyS1nCGUb_bYYRHwxm7cdL"
+            <input type="text" name="url" id="url"  required="required" placeholder="https://www.youtube.com/watch?v=KQ-u4RcFLBY&list=PLEsfXFp6DpzTyS1nCGUb_bYYRHwxm7cdL"
                    value="{% if url %} {{ url }} {% endif %}">
 
         </div>
