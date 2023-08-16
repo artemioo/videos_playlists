@@ -1,0 +1,20 @@
+<div>
+    {% include 'snippets/form_errors.html' %}
+
+    <form method='POST' action='/playlists/{{db_id}}/add-video' hx-post='/playlists/{{db_id}}/add-video'>
+        <div>
+            <label for="title">Video Title</label>
+            <input type="text" name="title" id="title" required="required" placeholder="FastAPI lessons"
+                   value="{% if title %} {{ title }} {% endif %}">
+
+        </div>
+        <div>
+            <label for="url">YouTube Link</label>
+            <input type="text" name="url" id="url"  required="required" placeholder="https://www.youtube.com/watch?v=KQ-u4RcFLBY&list=PLEsfXFp6DpzTyS1nCGUb_bYYRHwxm7cdL"
+                   value="{% if url %} {{ url }} {% endif %}">
+
+        </div>
+
+        <button type="submit"> Add Video </button>
+    </form>
+</div>

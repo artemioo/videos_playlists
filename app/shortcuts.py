@@ -1,6 +1,6 @@
 from cassandra.cqlengine.query import MultipleObjectsReturned, DoesNotExist
 from starlette.responses import HTMLResponse, RedirectResponse
-
+from fastapi import Request
 from app.config import get_settings
 from starlette.templating import Jinja2Templates
 
@@ -8,6 +8,10 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 settings = get_settings()
 templates = Jinja2Templates(directory=str(settings.TEMPLATES_DIR))
+
+
+def is_htmx(request: Request):
+    return request.headers.get('hx-request') == 'true'
 
 
 def get_object_or_404(cls_name, **kwargs):

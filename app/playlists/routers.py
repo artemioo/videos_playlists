@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Request, Form
+import uuid
+
+from fastapi import APIRouter, Request, Form, Depends
+from starlette.exceptions import HTTPException
 from fastapi.responses import HTMLResponse
 from app.users.decorators import login_required
-from app.shortcuts import render, redirect, get_object_or_404
+from app.shortcuts import render, redirect, get_object_or_404, is_htmx
 from app.utils import valid_schema_data_or_error
 from .models import Playlist
-from .schemas import PlaylistCreateSchema
+from .schemas import PlaylistCreateSchema, PlaylistVideoAddSchema
+from ..videos.schemas import VideoCreateSchema
 from ..watch_events.models import WatchEvent
 
 router = APIRouter(
@@ -48,7 +52,7 @@ def playlist_create_post_view(request: Request, title: str = Form(...)):
 
 
 @router.get('/{db_id}', response_class=HTMLResponse)
-def playlists_detail_view(request: Request, db_id: str):
+def playlists_detail_view(request: Request, db_id: uuid.UUID):
     obj = get_object_or_404(Playlist, db_id=db_id)
     if request.user.is_authenticated:
         user_id = request.user.username
@@ -57,3 +61,48 @@ def playlists_detail_view(request: Request, db_id: str):
         'videos': obj.get_videos(),
     }
     return render(request, "playlists/detail.html", context)
+
+
+@router.get("/{db_id}/add-video", response_class=HTMLResponse)
+@login_required
+def playlist_video_add_view(
+    request: Request,
+    db_id: uuid.UUID,
+    is_htmx=Depends(is_htmx),
+    ):
+    context = {"db_id": db_id}
+    if not is_htmx:
+        raise HTTPException(status_code=400)
+    return render(request, "playlists/htmx/add-video.html", context)
+
+
+@router.post('/{db_id}/add-video', response_class=HTMLResponse)
+@login_required
+def playlist_video_add_post_view(request: Request,
+                           db_id: uuid.UUID,
+                           title: str = Form(...),
+                           url: str = Form(...),
+                           is_htmx=Depends(is_htmx)):
+    raw_data = {
+        "title": title,
+        "url": url,
+        "user_id": request.user.username,
+        'playlist_id': db_id,
+    }
+    data, errors = valid_schema_data_or_error(raw_data, PlaylistVideoAddSchema)
+    redirect_path = data.get('path') or f'/playlists/{db_id}/'
+    context = {
+        'data': data,
+        "errors": errors,
+        'title': title,
+        "url": url,
+        'db_id': db_id,
+
+    }
+
+    if not is_htmx:
+        raise HTTPException(status_code=400)
+    if len(errors) > 0:
+        return render(request, 'playlists/htmx/add-video.html', context)
+    context = {'path': redirect_path, 'title': data.get('title')}
+    return render(request, 'videos/htmx/link.html', context)
