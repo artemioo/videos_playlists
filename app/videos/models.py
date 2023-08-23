@@ -63,6 +63,16 @@ class Video(Model):
             raise Exception('Invalid Request')
         return obj, created
 
+    def update_video_url(self, url, save=True):
+        self.url = url
+        host_id = extract_video_id(url)
+        if not host_id:
+            return None
+        self.host_id = host_id
+        if save:
+            self.save()
+        return url
+
     @staticmethod
     def add_video(url, user_id=None, **kwargs):
         host_id = extract_video_id(url)  #vnSVYUJrAZU
