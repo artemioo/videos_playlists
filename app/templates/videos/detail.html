@@ -1,13 +1,26 @@
 {% extends 'base.html' %}}
 
 {% block content %}
+<div class='row'>
 
-{{ object.title }} => {{ object }}
+    <div class='col-md-9 col-12'>
 
 
-<div id="yt-video" data-video-id="{{ host_id }}" data-start-time='{{ start_time }}'></div>
 
-<div><code>{{ object.render() }}</code></div>
+<div class='ratio ratio-16x9' id='yt-video' data-video-id="{{ host_id }}" data-start-time='{{ start_time }}'></div>
+
+</div>
+
+
+<div class='col-md-3 col-12'>
+
+    {% if object.title %}<h5>{{ object.title }}</h5>{% endif %}
+
+    <code>{{ object.render() }}</code>
+</div>
+
+
+</div>
 
 
 <script>
