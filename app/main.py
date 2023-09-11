@@ -21,7 +21,8 @@ from .playlists.routers import router as playlist_router
 from .config import get_settings
 from app.shortcuts import render, redirect
 from cassandra.cqlengine.management import sync_table
-
+from .shortcuts import redirect
+from typing import Optional
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent # app/
 TEMPLATE_DIR = BASE_DIR / "templates"
@@ -63,13 +64,6 @@ def homepage(request: Request):
     return render(request, 'home.html', {})
 
 
-@app.get('/logout', response_class=HTMLResponse)
-def logout(request: Request):
-    response = RedirectResponse(url='/login')
-    response.delete_cookie('session_id')  # Удаление куки
-    return response
-
-
 @app.get("/account", response_class=HTMLResponse)
 @login_required
 def account_view(request: Request):
@@ -79,15 +73,14 @@ def account_view(request: Request):
 
 @app.get("/login", response_class=HTMLResponse)
 def login_get_view(request: Request):
-    session_id = request.cookies.get('session_id') or None
-    return render(request, 'auth/login.html', {'logged_in': session_id is not None})
+    return render(request, 'auth/login.html', {})
 
 
 @app.post("/login", response_class=HTMLResponse)
 def login_post_view(request: Request,
                     email: str = Form(...),
-                    password: str = Form(...)):
-
+                    password: str = Form(...),
+                    next: Optional[str] = '/' ):
     raw_data = {'email': email, 'password': password}
     data, errors = utils.valid_schema_data_or_error(raw_data, UserLoginSchema)
     context = {
@@ -96,9 +89,23 @@ def login_post_view(request: Request,
             }
     if len(errors) > 0:
         return render(request, 'auth/login.html', context, status_code=400)
-
+    if "http://127.0.0.1" not in next:
+        next = '/'
     return redirect("/", cookies=data)
 
+
+@app.get('/logout', response_class=HTMLResponse)
+def logout_get_view(request: Request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    return render(request, 'auth/logout.html', {})
+
+
+@app.post('/logout', response_class=HTMLResponse)
+def logout_post_view(request: Request):
+    response = RedirectResponse(url='/')
+    response.delete_cookie('session_id')  # Удаление куки
+    return response
 
 @app.get("/signup", response_class=HTMLResponse)
 def signup_get_view(request: Request):
